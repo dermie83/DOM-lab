@@ -1,4 +1,5 @@
 let todoItems = [];
+let completeItems = [];
 let count = 0;
 
 function renderTodo(todo) {
@@ -8,6 +9,17 @@ function renderTodo(todo) {
     textCell.innerText = todo.text;
     const dateCell = row.insertCell(1);
     dateCell.innerText = todo.date;
+    const deleteCell = row.insertCell(2);
+    deleteCell.innerHTML = `<a onclick="deleteTodo('${todo.id}')" class="button">delete</a>`;
+}
+
+function renderCompleted(completed) {
+  const table = document.getElementById("todo-table-2");
+  const row = table.insertRow(-1);
+  const textCell = row.insertCell(0);
+  textCell.innerText = completed.text;
+  const dateCell = row.insertCell(1);
+  dateCell.innerText = completed.date;
 }
 
 function uuidv4() {
@@ -16,6 +28,7 @@ function uuidv4() {
     return v.toString(16);
   });
 }
+
   
 function addTodo() {
     const todoText = document.getElementById("todo-id").value;
@@ -26,4 +39,31 @@ function addTodo() {
     };
     todoItems.push(todo);
     renderTodo(todo);
+}
+
+
+function deleteTodo(id) {
+  deleteAllTodos();
+  const found = todoItems.findIndex((todo) => todo.id == id);
+  todoItems.splice(found, 1);
+  const completed = todoItems[found];
+
+  completeItems.push(completed);
+  renderAllTodos();
+}
+
+function renderAllTodos() {
+  for (let i = 0; i < todoItems.length; i++) {
+    renderTodo(todoItems[i]);
+  };
+  for (let j = 0; j < completeItems.length; j++) {
+    renderCompleted(completeItems[j]);
+  }
+}
+
+function deleteAllTodos() {
+  let table = document.getElementById("todo-table");
+  for (let i = 0; i < todoItems.length; i++) {
+    table.deleteRow(-1);
+  }
 }
